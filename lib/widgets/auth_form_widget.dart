@@ -2,7 +2,9 @@ import 'package:chat_flutter/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
 class AuthFormWidget extends StatefulWidget {
-  const AuthFormWidget({super.key});
+  final void Function(AuthFormData formData) onSubmit;
+
+  const AuthFormWidget({super.key, required this.onSubmit});
 
   @override
   State<AuthFormWidget> createState() => _AuthFormWidgetState();
@@ -65,7 +67,7 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your password';
                   }
-                  if (value.length < 6) {
+                  if (_formData.isSignup && value.length < 6) {
                     return 'Password must be at least 6 characters long';
                   }
                   return null;
@@ -106,6 +108,6 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
     if (!isValid) return;
     _formKey.currentState?.save();
 
-
+    widget.onSubmit(_formData);
   }
 }
