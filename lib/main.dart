@@ -1,4 +1,4 @@
-import 'package:chat_flutter/pages/loading_page.dart';
+import 'package:chat_flutter/pages/auth_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,15 +8,38 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey, brightness: Brightness.light),
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.grey[100],
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.black87, fontSize: 16),
+          headlineSmall: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueGrey,
+            // Button background
+            foregroundColor: Colors.white,
+            // Text/icon color
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
       ),
-      home: const LoadingPage(),
+      home: const AuthPage(),
       debugShowCheckedModeBanner: false,
     );
   }
