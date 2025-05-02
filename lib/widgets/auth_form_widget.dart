@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:chat_flutter/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
+
+import 'image_picker_widget.dart';
 
 class AuthFormWidget extends StatefulWidget {
   final void Function(AuthFormData formData) onSubmit;
@@ -26,6 +30,14 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
           key: _formKey,
           child: Column(
             children: [
+              Text(
+                _formData.isLogin ? 'Login' : 'Register',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 20),
+              if (_formData.isSignup)
+                ImagePickerWidget(onImagePicked: (file) => _handleImagePicked(file),),
+              if (_formData.isSignup) const SizedBox(height: 10),
               if (_formData.isSignup)
                 TextFormField(
                   key: const ValueKey('name'),
@@ -103,9 +115,18 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
     );
   }
 
+  void _handleImagePicked(File? image) {
+    _formData.image = image;
+  }
+
   void _submit() {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
+    if (_formData.isSignup && _formData.image == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please pick an image')));
+      return;
+    }
+
     _formKey.currentState?.save();
 
     widget.onSubmit(_formData);
