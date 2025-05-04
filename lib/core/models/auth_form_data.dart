@@ -3,9 +3,9 @@ import 'dart:io';
 enum AuthMode { signup, login }
 
 class AuthFormData {
-  String? name;
-  String? email;
-  String? password;
+  String name = '';
+  String email = '';
+  String password = '';
   File? image;
   AuthMode _authMode = AuthMode.login;
 

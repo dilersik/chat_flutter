@@ -122,10 +122,6 @@ class _AuthFormWidgetState extends State<AuthFormWidget> {
   void _submit() {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
-    if (_formData.isSignup && _formData.image == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please pick an image')));
-      return;
-    }
 
     _formKey.currentState?.save();
 

@@ -1,3 +1,4 @@
+import 'package:chat_flutter/core/services/auth/auth_service_mock.dart';
 import 'package:chat_flutter/widgets/auth_form_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -35,14 +36,12 @@ class _AuthPageState extends State<AuthPage> {
       setState(() => _isLoading = true);
 
       if (formData.isLogin) {
-        // Perform login
-        // await AuthService.login(formData.email, formData.password);
+        await AuthServiceMock().login(formData.email, formData.password);
       } else {
-        // Perform signup
-        // await AuthService.signup(formData.name, formData.email, formData.password, formData.image);
+        await AuthServiceMock().signUp(formData.name, formData.email, formData.password, formData.image);
       }
-
     } catch (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $error')));
     } finally {
       setState(() => _isLoading = false);
