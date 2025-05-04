@@ -5,13 +5,18 @@ import 'package:chat_flutter/core/models/chat_user.dart';
 import 'package:chat_flutter/core/services/auth/auth_service.dart';
 
 class AuthServiceMock implements AuthService {
-
-  static Map<String, ChatUser> _users = {};
+  static final _defaultUser = ChatUser(
+    id: '1',
+    name: 'Default User',
+    email: 'user@email.com',
+    imageUrl: 'assets/images/avatar.png',
+  );
+  static final Map<String, ChatUser> _users = {_defaultUser.email: _defaultUser};
   static ChatUser? _currentUser;
   static MultiStreamController<ChatUser?>? _controllerUser;
   static final _userStream = Stream<ChatUser?>.multi((controller) {
     _controllerUser = controller;
-    _updateUser(null);
+    _updateUser(_defaultUser);
   });
 
   @override
@@ -48,12 +53,7 @@ class AuthServiceMock implements AuthService {
       throw Exception('User already exists');
     }
 
-    final newUser = ChatUser(
-      id: email,
-      name: name,
-      email: email,
-      imageUrl: image?.path,
-    );
+    final newUser = ChatUser(id: email, name: name, email: email, imageUrl: image?.path ?? 'assets/images/avatar.png');
 
     _users[email] = newUser;
     _updateUser(newUser);
@@ -63,5 +63,4 @@ class AuthServiceMock implements AuthService {
     _currentUser = user;
     _controllerUser?.add(user);
   }
-
 }
