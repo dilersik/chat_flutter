@@ -14,7 +14,7 @@ class NewMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'No NewMessage yet.',
+        'New Message Widget',
         style: Theme.of(context).textTheme.bodyLarge,
       ),
     );
