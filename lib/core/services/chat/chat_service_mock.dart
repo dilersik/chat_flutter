@@ -51,7 +51,7 @@ class ChatServiceMock implements ChatService {
       userImageUrl: user.imageUrl,
     );
     _messages.add(chat);
-    _messagesStreamController?.add(_messages);
+    _messagesStreamController?.add(_messages.reversed.toList());
     return chat;
   }
 
