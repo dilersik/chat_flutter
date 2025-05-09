@@ -1,5 +1,6 @@
 import 'package:chat_flutter/core/models/ChatMessage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MessageBubbleWidget extends StatelessWidget {
   const MessageBubbleWidget({super.key, required this.message, required this.isMe});
@@ -15,6 +16,7 @@ class MessageBubbleWidget extends StatelessWidget {
           mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             Column(
+              crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -35,9 +37,17 @@ class MessageBubbleWidget extends StatelessWidget {
                   ),
                   child: Text(message.text, style: TextStyle(color: isMe ? Colors.white : Colors.black)),
                 ),
-                Text(
-                  "${message.userName} at ", // ${message.createdAt.toLocal()}
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: isMe ? 0 : 10,
+                    right: isMe ? 10 : 0,
+                    top: 0,
+                    bottom: 10,
+                  ),
+                  child: Text(
+                    "${message.userName} at ${_formatDateTime(message.createdAt.toLocal())}",
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
                 ),
               ],
             ),
@@ -69,5 +79,23 @@ class MessageBubbleWidget extends StatelessWidget {
       backgroundImage: provider,
       radius: 20,
     );
+  }
+
+  String _formatDateTime(DateTime createdAt) {
+    final now = DateTime.now();
+    final difference = now.difference(createdAt);
+
+    if (difference.inDays == 0) {
+      // Same day: show only time
+      return DateFormat('hh:mm a').format(createdAt); // e.g., 02:45 PM
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else if (difference.inDays < 7) {
+      // Less than a week ago: show weekday
+      return DateFormat('EEEE').format(createdAt); // e.g., Monday
+    } else {
+      // Older: show date
+      return DateFormat('dd/MM/yyyy').format(createdAt); // e.g., 08/05/2025
+    }
   }
 }
