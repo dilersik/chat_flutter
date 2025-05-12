@@ -1,5 +1,5 @@
 import 'package:chat_flutter/core/services/chat/chat_notification_service.dart';
-import 'package:chat_flutter/pages/notifications_page.dart';
+import 'package:chat_flutter/pages/chat_notifications_page.dart';
 import 'package:chat_flutter/widgets/messages_widget.dart';
 import 'package:chat_flutter/widgets/new_message_widget.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class ChatPage extends StatelessWidget {
           Stack(
             children: [
               IconButton(
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => NotificationsPage())),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => ChatNotificationsPage())),
                 icon: Icon(Icons.notifications),
               ),
               Positioned(
