@@ -9,6 +9,7 @@ class LoadingPage extends StatelessWidget {
       backgroundColor: Theme.of(context).primaryColor,
       body: const Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(backgroundColor: Colors.white,),
             SizedBox(height: 20),

@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:chat_flutter/core/models/chat_user.dart';
-
-import 'auth_service_mock.dart';
+import 'package:chat_flutter/core/services/auth/auth_service_firebase.dart';
 
 abstract class AuthService {
-  factory AuthService() => AuthServiceMock();
+  factory AuthService() => AuthServiceFirebase();
 
   ChatUser? get currentUser;
   Stream<ChatUser?> get onUserChanged;
