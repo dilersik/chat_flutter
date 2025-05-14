@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:chat_flutter/core/models/chat_user.dart';
 import 'package:chat_flutter/core/services/auth/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthServiceFirebase implements AuthService {
 
   static ChatUser? _currentUser;
-  static MultiStreamController<ChatUser?>? _controllerUser;
   static final _userStream = Stream<ChatUser?>.multi((controller) async {
     final authChanges = FirebaseAuth.instance.authStateChanges();
     await for (final user in authChanges) {
@@ -17,7 +17,12 @@ class AuthServiceFirebase implements AuthService {
         _currentUser = null;
         controller.add(null);
       } else {
-        _currentUser = _toChatUser(user);
+        _currentUser = ChatUser(
+          id: user.uid,
+          name: user.displayName ?? user.email?.split('@')[0] ?? '',
+          email: user.email ?? '',
+          imageUrl: user.photoURL ?? '',
+        );
         controller.add(_currentUser);
       }
     }
@@ -31,10 +36,7 @@ class AuthServiceFirebase implements AuthService {
 
   @override
   Future<void> login(String email, String password) async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
   }
 
   @override
@@ -43,17 +45,16 @@ class AuthServiceFirebase implements AuthService {
   @override
   Future<void> signUp(String name, String email, String password, File? image) async {
     final auth = FirebaseAuth.instance;
-    final userCredential = await auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    final userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
     final user = userCredential.user;
 
     if (user != null) {
-      user.updateDisplayName(name);
-
       final imageUrl = await uploadImage(image, '${user.uid}.jpg');
-      user.updatePhotoURL(imageUrl);
+
+      await user.updateDisplayName(name);
+      await user.updatePhotoURL(imageUrl);
+
+      await _saveChatUser(ChatUser(id: user.uid, name: name, email: email, imageUrl: imageUrl));
     }
   }
 
@@ -64,13 +65,9 @@ class AuthServiceFirebase implements AuthService {
     return await storageRef.getDownloadURL();
   }
 
-  static ChatUser _toChatUser(User user) {
-    return ChatUser(
-      id: user.uid,
-      name: user.displayName ?? user.email?.split('@')[0] ?? '',
-      email: user.email ?? '',
-      imageUrl: user.photoURL ?? '',
-    );
+  Future<void> _saveChatUser(ChatUser user) async {
+    final store = FirebaseFirestore.instance;
+    final userRef = store.collection('users').doc(user.id);
+    return await userRef.set({'name': user.name, 'email': user.email, 'imageUrl': user.imageUrl});
   }
-
 }
