@@ -46,10 +46,5 @@ class ChatNotificationService with ChangeNotifier {
         ));
       }
     });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle the notification when the app is opened from a background state
-      print('Notification clicked!');
-    });
   }
 }
