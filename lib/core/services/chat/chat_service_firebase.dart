@@ -11,15 +11,28 @@ class ChatServiceFirebase implements ChatService {
   Stream<List<ChatMessage>> messagesStream() => Stream.empty();
 
   @override
-  Future<void> save(String text, ChatUser user) async {
+  Future<ChatMessage> save(String text, ChatUser user) async {
     final store = FirebaseFirestore.instance;
-    store.collection('chat').add({
+    final docRef = await store.collection('chat').add({
       'text': text,
       'createdAt': DateTime.now().toIso8601String(),
       'userId': user.id,
       'userName': user.name,
       'userImageURL': user.imageUrl,
     });
+    final doc = await docRef.get();
+    final data = doc.data();
+    if (data == null) {
+      throw Exception('Error saving message');
+    }
+    return ChatMessage(
+      id: doc.id,
+      text: data['text'],
+      createdAt: DateTime.parse(data['createdAt']),
+      userId: data['userId'],
+      userName: data['userName'],
+      userImageUrl: data['userImageURL'],
+    );
   }
 
 }

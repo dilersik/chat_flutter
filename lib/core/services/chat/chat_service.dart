@@ -8,5 +8,5 @@ abstract class ChatService {
   factory ChatService() => ChatServiceFirebase();
 
   Stream<List<ChatMessage>> messagesStream();
-  Future<void> save(String text, ChatUser user);
+  Future<ChatMessage> save(String text, ChatUser user);
 }
