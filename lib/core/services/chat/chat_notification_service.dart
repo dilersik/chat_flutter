@@ -19,9 +19,10 @@ class ChatNotificationService with ChangeNotifier {
   }
 
   Future<void> init() async {
+    // keep it this order
+    await _configureTerminated();
     await _configureForeground();
     await _configureBackground();
-    await _configureTerminated();
   }
 
   Future<bool> get _isAuthorized async {
