@@ -10,34 +10,26 @@ class ChatServiceFirebase implements ChatService {
   Stream<List<ChatMessage>> messagesStream() => Stream.empty();
 
   @override
-  Future<ChatMessage> save(String text, ChatUser user) async {
+  Future<ChatMessage?> save(String text, ChatUser user) async {
     final store = FirebaseFirestore.instance;
+    final chat = ChatMessage(
+      id: DateTime.now().toString(),
+      text: text,
+      createdAt: DateTime.now(),
+      userId: user.id,
+      userName: user.name,
+      userImageUrl: user.imageUrl,
+    );
+
     final docRef = await store
         .collection('chat')
-        // .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore)
-        .add({
-          'text': text,
-          'createdAt': DateTime.now().toIso8601String(),
-          'userId': user.id,
-          'userName': user.name,
-          'userImageURL': user.imageUrl,
-        });
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .add(chat);
     final doc = await docRef.get();
-    final data = doc.data();
-    if (data == null) {
-      throw Exception('Error saving message');
-    }
-    return ChatMessage(
-      id: doc.id,
-      text: data['text'],
-      createdAt: DateTime.parse(data['createdAt']),
-      userId: data['userId'],
-      userName: data['userName'],
-      userImageUrl: data['userImageURL'],
-    );
+    return doc.data();
   }
 
-  ChatMessage fromFirestore(
+  ChatMessage _fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc,
       SnapshotOptions? options,
   ) {
@@ -55,14 +47,12 @@ class ChatServiceFirebase implements ChatService {
     );
   }
 
-  Map<String, dynamic> toFirestore(ChatMessage message) {
-    return {
-      'text': message.text,
-      'createdAt': message.createdAt.toIso8601String(),
-      'userId': message.userId,
-      'userName': message.userName,
-      'userImageURL': message.userImageUrl,
+  Map<String, dynamic> _toFirestore(ChatMessage chat, SetOptions? options) => {
+      'text': chat.text,
+      'createdAt': chat.createdAt.toIso8601String(),
+      'userId': chat.userId,
+      'userName': chat.userName,
+      'userImageURL': chat.userImageUrl,
     };
-  }
 
 }
