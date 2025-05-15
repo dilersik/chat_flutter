@@ -41,7 +41,7 @@ class ChatServiceMock implements ChatService {
   Stream<List<ChatMessage>> messagesStream() => _messagesStream;
 
   @override
-  Future<ChatMessage> save(String text, ChatUser user) async {
+  Future<void> save(String text, ChatUser user) async {
     final chat = ChatMessage(
       id: DateTime.timestamp().toString(),
       text: text,
@@ -52,7 +52,6 @@ class ChatServiceMock implements ChatService {
     );
     _messages.add(chat);
     _messagesStreamController?.add(_messages.reversed.toList());
-    return chat;
   }
 
 
