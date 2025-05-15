@@ -64,7 +64,7 @@ class MessageBubbleWidget extends StatelessWidget {
   }
 
   Widget _showUserImage(String? imageUrl) {
-    if (imageUrl == null) {
+    if (imageUrl == null || imageUrl.isEmpty) {
       return Image.asset("assets/images/avatar.png", width: 40, height: 40);
     }
     ImageProvider? provider;
