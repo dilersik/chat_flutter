@@ -53,7 +53,7 @@ class AuthServiceMock implements AuthService {
       throw Exception('User already exists');
     }
 
-    final newUser = ChatUser(id: email, name: name, email: email, imageUrl: image?.path ?? 'assets/images/avatar.png');
+    final newUser = ChatUser(id: email, name: name, email: email, imageUrl: image?.path);
 
     _users[email] = newUser;
     _updateUser(newUser);

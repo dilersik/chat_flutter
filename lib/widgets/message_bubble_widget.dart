@@ -53,20 +53,19 @@ class MessageBubbleWidget extends StatelessWidget {
             ),
           ],
         ),
-        if (message.userImageUrl != null)
-          Positioned(
-            top: 0,
-            left: isMe ? null : 10,
-            right: isMe ? 10 : null,
-            child: _showUserImage(message.userImageUrl),
-          ),
+        Positioned(
+          top: 0,
+          left: isMe ? null : 10,
+          right: isMe ? 10 : null,
+          child: _showUserImage(message.userImageUrl),
+        ),
       ],
     );
   }
 
   Widget _showUserImage(String? imageUrl) {
     if (imageUrl == null) {
-      return const SizedBox.shrink();
+      return Image.asset("assets/images/avatar.png", width: 40, height: 40);
     }
     ImageProvider? provider;
     if (imageUrl.startsWith('http')) {

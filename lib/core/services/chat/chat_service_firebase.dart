@@ -7,7 +7,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatServiceFirebase implements ChatService {
   @override
-  Stream<List<ChatMessage>> messagesStream() => Stream.empty();
+  Stream<List<ChatMessage>> messagesStream() => FirebaseFirestore.instance
+      .collection('chat')
+      .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
   @override
   Future<ChatMessage?> save(String text, ChatUser user) async {
@@ -29,10 +34,7 @@ class ChatServiceFirebase implements ChatService {
     return doc.data();
   }
 
-  ChatMessage _fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-      SnapshotOptions? options,
-  ) {
+  ChatMessage _fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc, SnapshotOptions? options) {
     final data = doc.data();
     if (data == null) {
       throw Exception('Error converting message');
@@ -48,11 +50,10 @@ class ChatServiceFirebase implements ChatService {
   }
 
   Map<String, dynamic> _toFirestore(ChatMessage chat, SetOptions? options) => {
-      'text': chat.text,
-      'createdAt': chat.createdAt.toIso8601String(),
-      'userId': chat.userId,
-      'userName': chat.userName,
-      'userImageURL': chat.userImageUrl,
-    };
-
+    'text': chat.text,
+    'createdAt': chat.createdAt.toIso8601String(),
+    'userId': chat.userId,
+    'userName': chat.userName,
+    'userImageURL': chat.userImageUrl,
+  };
 }
