@@ -54,7 +54,7 @@ class ChatNotificationService with ChangeNotifier {
     final isAuthorized = await _isAuthorized;
     if (!isAuthorized) return;
 
-    RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+    final message = await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
       _messageHandler(message);
     }
